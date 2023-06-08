@@ -1,18 +1,18 @@
 <template>
   <ValidateForm @form-submit="onFormSubmit">
-    <div class="mb-3">
-      <label for="exampleInputEmail" class="form-label">邮箱地址</label>
+    <div class="mb-3" style="width: 400px; margin: 0 auto">
+      <label for="exampleInputEmail" class="form-label">邮箱地址:</label>
       <ValidateInput ref="emailInputRef" :rules="emailRules" v-model="emailValue" type="text" placeholder="请输入邮箱" />
       <!-- <div class="form-text" v-if="emailRef.error">{{ emailRef.message }}</div> -->
     </div>
-    <div class="mb-3">
-      <label for="exampleInputPassword" class="form-label">密码</label>
+    <div class="mb-3" style="width: 400px; margin: 0 auto">
+      <label for="exampleInputPassword" class="form-label">密码:</label>
       <ValidateInput ref="passwordInputRef" :rules="passwordRules" v-model="passwordValue" type="password" placeholder="请输入密码" />
       <!-- <input type="password" class="form-control" id="exampleInputPassword" /> -->
     </div>
     <!-- v-slot:submit 缩写 #submit -->
     <template #submit>
-      <button type="submit" class="btn btn-danger mb-3">提交</button>
+      <button type="submit" class="btn btn-primary mb-3" style="width: 400px">提交</button>
     </template>
   </ValidateForm>
 </template>

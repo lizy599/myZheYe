@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar navbar-dark bg-primary justify-content-between mb-4 px-4">
-    <a href="#" class="navbar-brand">者也专栏</a>
+    <a href="javascript:;" class="navbar-brand">者也专栏</a>
     <ul class="list-inline mb-0" v-if="token">
       <li class="list-inline-item">
         <Dropdown :title="`你好 ${user.nickName}`">

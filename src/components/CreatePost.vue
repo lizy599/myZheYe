@@ -1,7 +1,6 @@
 <template>
   <div class="create-post-page">
     <h4>{{ title }}</h4>
-    <!-- <UserProfile v-if="isEditMode" :user="user" /> -->
     <Upload :key="keyUpdate" action="/upload" :beforeUpload="beforeUpload" :uploaded="uploadedData" @updateImage="onUploadImage" @file-uploaded="onFileUploaded" @file-uploaded-error="onFileUploadedError" class="d-flex align-items-center justify-content-center bg-light text-secondary w-100 my-4" />
     <ValidateForm @form-submit="onFormSubmit">
       <div class="mb-3">
@@ -27,8 +26,7 @@ import { useRoute, useRouter } from 'vue-router'
 import ValidateForm from './ValidateForm.vue'
 import ValidateInput, { RulesProp } from './ValidateInput.vue'
 import Upload from './Upload.vue'
-import { getPost } from '../request/api'
-import UserProfile from './UserProfile.vue'
+import { getPost, patchPost } from '../request/api'
 
 const store = useStore()
 const router = useRouter()
@@ -38,7 +36,6 @@ const uploadedData = ref()
 const isEditMode = ref(!!route.query.id)
 const keyUpdate = ref(0)
 const title = computed(() => (isEditMode.value ? '编辑文章' : '新建文章'))
-const user = ref({ avatar: {}, description: '', email: '', nickName: '', _id: '' })
 // 图片id
 const imageId = ref('')
 // 文章标题初始值
@@ -52,14 +49,25 @@ const contentRules: RulesProp = [{ type: 'required', message: '文章内容不�
 const onFormSubmit = (result: boolean) => {
   if (result) {
     const { column, _id } = store.state.user
-    const postData = {
-      title: titleVal.value,
-      content: contentVal.value,
-      image: imageId.value,
-      column: column,
-      author: _id
+    if (isEditMode.value) {
+      const patchData = {
+        _id,
+        title: titleVal.value,
+        content: contentVal.value,
+        image: imageId.value
+      }
+      patchPost(patchData)
+    } else {
+      const postData = {
+        title: titleVal.value,
+        content: contentVal.value,
+        image: imageId.value,
+        column: column,
+        author: _id
+      }
+      store.dispatch('createPost', postData)
     }
-    store.dispatch('createPost', postData)
+
     router.push({ name: 'column', params: { id: column } })
   }
 }

@@ -53,11 +53,19 @@ export function getPost(id: string) {
   })
 }
 // 创建文章
-export function createPost(data: { title: 'string'; content: 'string'; image: 'string'; column: 'string'; author: 'string' }) {
+export function createPost(data: { title: string; content: string; image: string; column: string; author: string }) {
   return request({
     url: '/posts',
     method: 'POST',
     data
+  })
+}
+// 编辑文章
+export function patchPost(data: { _id: string; title: string; content: string; image: string }) {
+  return request({
+    url: '/posts/' + data._id,
+    method: 'PATCH',
+    data: { ...data, _id: undefined }
   })
 }
 // 上传图片

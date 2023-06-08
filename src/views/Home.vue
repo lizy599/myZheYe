@@ -11,7 +11,7 @@
     </section>
     <h4 class="font-weight-bold text-center">发现精彩</h4>
     <ColumnList :list="list"></ColumnList>
-    <Pagination :count="count" />
+    <Pagination :page="page" @pageChange="getColumnList" />
   </div>
 </template>
 
@@ -25,20 +25,21 @@ import { getColumns } from '../request/api'
 const store = useStore()
 
 const list = computed(() => store.state.columns)
-const count = ref(0)
+const page = ref({ count: 10, currentPage: 1, pageSize: 3 })
 
-onMounted(async () => {
-  if (!store.state.user._id) {
-    // store.dispatch('fetchColumns')
-    try {
-      const res = await getColumns()
-      count.value = res.data.count
-      store.commit('fetchColumns', res.data)
-      store.dispatch('fetchUser')
-    } catch (error) {
-      console.log(error)
-    }
+async function getColumnList(params = { currentPage: 1, pageSize: 3 }) {
+  // store.dispatch('fetchColumns')
+  try {
+    const res = await getColumns(params)
+    page.value = { count: res.data.count, currentPage: res.data.currentPage, pageSize: res.data.pageSize }
+    store.commit('fetchColumns', res.data)
+    store.dispatch('fetchUser')
+  } catch (error) {
+    console.log(error)
   }
+}
+onMounted(() => {
+  getColumnList()
 })
 </script>
 <style scoped></style>

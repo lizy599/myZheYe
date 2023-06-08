@@ -1,27 +1,41 @@
 <template>
   <div class="xtx-pagination">
-    <a href="javascript:;" class="disabled">上一页</a>
-    <a href="javascript:;">1</a>
-    <span>...</span>
-    <a href="javascript:;" class="active">3</a>
-    <a href="javascript:;">4</a>
-    <a href="javascript:;">5</a>
-    <a href="javascript:;">6</a>
-    <a href="javascript:;">7</a>
-    <span>...</span>
-    <a href="javascript:;">下一页</a>
-
-    <span class="total">总共{{ count }}条</span>
+    <a href="javascript:;" :class="page.currentPage === 1 ? 'disabled' : ''" @click="pageChange($event, page.currentPage - 1)">上一页</a>
+    <template v-for="item in pageTotal" :key="item">
+      <span v-if="pageTotal > 10 && (item - page.currentPage === 2 || pageTotal - item === 2 || item - page.currentPage === -1)">...</span>
+      <a v-if="pageTotal < 10 || (item - page.currentPage > 3 && item - page.currentPage < 7) || (item - page.currentPage < 2 && item - page.currentPage >= -1) || pageTotal - item < 3" href="javascript:;" :class="item === page.currentPage ? 'active' : ''" @click="pageChange($event, item)">{{
+        item
+      }}</a>
+    </template>
+    <a href="javascript:;" :class="page.currentPage === pageTotal ? 'disabled' : ''" @click="pageChange($event, page.currentPage + 1)">下一页</a>
+    <select aria-label="Default select example" @change="pageChange">
+      <option :selected="page.pageSize === 3" :value="3">3条/页</option>
+      <option :selected="page.pageSize === 6" :value="6">6条/页</option>
+      <option :selected="page.pageSize === 9" :value="9">9条/页</option>
+    </select>
+    <span class="total">总共{{ page.count }}条</span>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+
 const props = defineProps({
-  count: {
-    type: Number,
+  page: {
+    type: Object,
     required: true
   }
 })
+const $emit = defineEmits(['pageChange'])
+const pageTotal = computed(() => Math.ceil(props.page.count / props.page.pageSize))
+
+function pageChange(e, currentPage = props.page.currentPage) {
+  console.log(currentPage, pageTotal)
+  if (currentPage <= 0 || currentPage > pageTotal.value) {
+    return
+  }
+  $emit('pageChange', { pageSize: e.target.value || props.page.pageSize, currentPage })
+}
 </script>
 <style scoped lang="less">
 .xtx-pagination {

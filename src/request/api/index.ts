@@ -25,7 +25,7 @@ export function getUser() {
   })
 }
 // 专栏
-export function getColumns(params = { currentPage: 1, pageSize: 10 }) {
+export function getColumns(params: { currentPage: number; pageSize: number }) {
   return request({
     url: '/columns',
     method: 'GET',

@@ -68,6 +68,13 @@ export function patchPost(data: { _id: string; title: string; content: string; i
     data: { ...data, _id: undefined }
   })
 }
+// 删除
+export function deletePost(data: { _id: string }) {
+  return request({
+    url: '/posts/' + data._id,
+    method: 'DELETE'
+  })
+}
 // 上传图片
 export function upload(data) {
   return request({

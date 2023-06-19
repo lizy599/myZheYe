@@ -7,12 +7,12 @@
         <div class="col">
           <user-profile :user="currentPost.author" v-if="typeof currentPost.author === 'object'"></user-profile>
         </div>
-        <span class="text-muted col text-right font-italic">发表于：{{ currentPost.createdAt }}</span>
+        <span class="text-muted text-right font-italic">发表于：{{ currentPost.createdAt }}</span>
       </div>
       <div v-html="currentHTML"></div>
       <div v-if="showEditArea" class="btn-group mt-5">
         <router-link type="button" class="btn btn-success" :to="{ name: 'create', query: { id: currentPost._id } }">编辑</router-link>
-        <button type="button" class="btn btn-danger">删除</button>
+        <button type="button" class="btn btn-danger" @click="deletePosts">删除</button>
       </div>
     </article>
   </div>
@@ -21,13 +21,14 @@
 <script lang="ts" setup>
 import { useStore } from 'vuex'
 import UserProfile from '../components/UserProfile.vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import MarkdownIt from 'markdown-it'
 import { computed, onMounted, ref } from 'vue'
-import { getPost } from '../request/api'
+import { getPost, deletePost } from '../request/api'
 
 const store = useStore()
 const route = useRoute()
+const router = useRouter()
 const showEditArea = ref(null)
 const currentId = route.params.id
 const md = new MarkdownIt()
@@ -52,6 +53,16 @@ const currentImageUrl = computed(() => {
     return null
   }
 })
+const deletePosts = async () => {
+  try {
+    console.log('111', currentPost.value)
+    const res = await deletePost({ _id: currentPost.value._id })
+    alert('删除成功')
+    router.push('/column/' + currentPost.value.column)
+  } catch (error) {
+    console.log(error)
+  }
+}
 getPost(currentId).then(res => {
   if (res && res.code === 0) {
     currentPost.value = res.data
